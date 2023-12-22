@@ -1,6 +1,6 @@
 syntax = "proto3";
 package components.list.v1;
-option go_package = "github.com/mar-coding/personalWebsiteBackend/APIs/proto-gen/components/list/v1;list";
+option go_package = "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/components/list/v1;list";
 
 message PaginatedListRequest {
   map<string, string> filters = 1;

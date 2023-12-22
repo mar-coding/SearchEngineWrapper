@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	webPB "github.com/mar-coding/personalWebsiteBackend/APIs/proto-gen/services/website/v1"
+	webPB "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/services/website/v1"
 	"google.golang.org/grpc"
 )
 

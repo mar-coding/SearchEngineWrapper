@@ -1,22 +1,23 @@
 syntax = "proto3";
-package services.website.v1;
-option go_package = "github.com/mar-coding/personalWebsiteBackend/APIs/proto-gen/services/website/v1;website";
+package services.search.v1;
+option go_package = "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/services/search/v1;search";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "google/protobuf/descriptor.proto";
 import "googleapis/google/api/annotations.proto";
+import "components/list/v1/list.proto";
 import "validate/validate.proto";
 
 
 // Service Information
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    title: "Website Service";
+    title: "search Service";
     version: "1.0";
     contact: {
-      name: "amnrah";
+      name: "MohammadAmin Rahimi";
       url: "127.0.0.1";
-      email: "test@test.com";
+      email: "marcoding78@gmail.com";
     };
   };
   security_definitions: {
@@ -45,7 +46,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 // =============== service permissions ===============
 
 extend google.protobuf.MethodOptions {
-  Permission permission = 1000000;
+  Permission permission = 1000001;
 }
 
 message Permission {
@@ -57,70 +58,49 @@ message Permission {
 
 enum Permissions {
   NONE = 0;
-  CREATE_POST = 1;
+  LIST_ITEM_POST = 1;
 }
 
-service WebService {
-  // TestPostAPI
+service SearchService {
+  // ListItemsSearch
   //
   // | Field ID    | Name      | Type                                                       | Required                  |
   // | ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | {{range .RequestType.Fields}}
   // | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-  rpc TestPostAPI(TestPostAPIRequest) returns(TestPostAPIResponse) {
+  rpc ListItemsSearch(ListItemsSearchRequest) returns(ListItemsSearchResponse) {
     option(google.api.http) = {
-      post: "/testPost/{name}"
-      body: "*"
+      get: "/search"
     };
-    option(permission) = {
-      permissions: NONE,
-      optional: false,
-      validate_permissions: false,
-      captcha: false
-    };
-    option(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "This is API to test Post method",
-    };
-  }
-
-  // TestGetAPI
-  //
-  // | Field ID    | Name      | Type                                                       | Required                  |
-  // | ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | {{range .RequestType.Fields}}
-  // | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-  rpc TestGetAPI(TestGetAPIRequest) returns(TestGetAPIResponse) {
-    option(google.api.http) = {
-      get: "/testGet"
-    };
-    option(permission) = {
+    option(search.v1.permission) = {
       permissions: NONE,
       validate_permissions: false,
       optional: false,
       captcha: false
     };
     option(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "This is API to test Get method",
+      summary: "get list of items for searching query",
     };
   }
 }
 
-message TestPostAPIRequest{
-  // required
-  int32 age = 1 [(validate.rules).int32.gt = 10];
-  // required
-  string name = 2 [(validate.rules).string.not_in = ""];
-
+message ListItemsSearchResponse {
+  repeated Item items = 1;
+  int32 page_size = 2;
+  int32 page_no = 3;
+  int32 total_items_count = 4;
 }
 
-message TestPostAPIResponse{
-  string output = 1;
+message Item {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  reserved 4,5,6,7,8,9;
+  string url = 10;
 }
 
-message TestGetAPIRequest{
+message ListItemsSearchRequest {
   // required
-  repeated string names = 1;
-}
-
-message TestGetAPIResponse{
-  string output = 1;
-  int32 number_of_names = 2;
+  string q = 1 [(validate.rules).string.not_in = ""];
+  int32 page_size = 2;
+  int32 page_no = 3;
 }

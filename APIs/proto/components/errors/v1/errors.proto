@@ -1,6 +1,6 @@
 syntax = "proto3";
 package components.errors.v1;
-option go_package = "github.com/mar-coding/personalWebsiteBackend/APIs/proto-gen/components/errors/v1;errors";
+option go_package = "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/components/errors/v1;errors";
 
 message ErrorServiceDetails {
   uint32 service_code = 1;

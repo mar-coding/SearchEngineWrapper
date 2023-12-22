@@ -2,7 +2,7 @@ package rpc
 
 import (
 	"context"
-	webPB "github.com/mar-coding/personalWebsiteBackend/APIs/proto-gen/services/website/v1"
+	webPB "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/services/website/v1"
 )
 
 func (w WebsiteService) TestPostAPI(ctx context.Context, in *webPB.TestPostAPIRequest) (*webPB.TestPostAPIResponse, error) {
