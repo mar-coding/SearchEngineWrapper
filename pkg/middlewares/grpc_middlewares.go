@@ -5,6 +5,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"log/slog"
+	"strings"
+	"time"
+
 	"github.com/getsentry/sentry-go"
 	grpcZap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpcRecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -23,14 +27,15 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"log/slog"
-	"strings"
-	"time"
 )
 
 const (
 	SESSION_COOKIE_KEY = "session_token"
 )
+
+type grpcKey string
+
+const _defaultAclContextKeyForGrpc grpcKey = "localize"
 
 // Deprecated: PermissionDescriptor get permissions and credentialType from descriptor, default validate is true in implementation
 type PermissionDescriptor func(ctx context.Context) ([]int32, bool, bool, bool)
@@ -163,6 +168,9 @@ func GrpcSessionMiddleware(permissionDescriptor PermissionFunc, errHandler error
 		}
 
 		aesEncryption, err := encryption.NewAES[int64](sessionPrivateKey)
+		if err != nil {
+			return nil, errHandler.New(codes.Unauthenticated, nil, "session_token is invalid")
+		}
 		expTimeInt, err := aesEncryption.Decrypt(sessionByte)
 		if err != nil {
 			return nil, errHandler.New(codes.Unauthenticated, nil, "session_token is invalid")
@@ -193,7 +201,6 @@ func notOptionalAclContext(ctx context.Context, serviceInfo *serviceInfo.Service
 		acl.WithPublicSecretKey(jwtPublicSecret),
 		acl.WithPrivateSecretKey(jwtPrivateSecret),
 	)
-
 	if err != nil {
 		if errors.Is(err, acl.ErrSecretKeyIsEmpty) {
 			return nil, errHandler.New(codes.Internal, nil, "public secret key is empty")
@@ -222,8 +229,8 @@ func GrpcSentryPerformance(client *sentry.Client, opts ...Option) grpc.UnaryServ
 	return func(ctx context.Context,
 		req interface{},
 		info *grpc.UnaryServerInfo,
-		handler grpc.UnaryHandler) (interface{}, error) {
-
+		handler grpc.UnaryHandler,
+	) (interface{}, error) {
 		hub := sentry.NewHub(client, sentry.NewScope())
 		ctx = sentry.SetHubOnContext(ctx, hub)
 
@@ -262,7 +269,7 @@ func GrpcLocalize(bundle *languageLocalize.I18n) grpc.UnaryServerInterceptor {
 			lang = bundle.GetLanguageFromMD(md)
 		}
 
-		ctx = context.WithValue(ctx, "localize", bundle.GetLocalize(lang))
+		ctx = context.WithValue(ctx, _defaultAclContextKeyForGrpc, bundle.GetLocalize(lang))
 
 		return handler(ctx, req)
 	}

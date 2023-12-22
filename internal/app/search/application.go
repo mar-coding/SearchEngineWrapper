@@ -4,6 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/mar-coding/SearchEngineWrapper/configs"
 	"github.com/mar-coding/SearchEngineWrapper/internal/delivery/rpc"
 	"github.com/mar-coding/SearchEngineWrapper/internal/usecase"
@@ -13,10 +18,6 @@ import (
 	"github.com/mar-coding/SearchEngineWrapper/pkg/logger"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/serviceInfo"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/transport"
-	"log"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 type AppBootstrapper interface {
@@ -63,7 +64,6 @@ func NewApp(
 	app.elastic = elastic
 
 	return app, nil
-
 }
 
 func (a *Application) Run(ctx context.Context) {

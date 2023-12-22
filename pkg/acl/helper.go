@@ -2,8 +2,9 @@ package acl
 
 import (
 	"context"
-	"google.golang.org/grpc/metadata"
 	"strings"
+
+	"google.golang.org/grpc/metadata"
 )
 
 const (

@@ -4,10 +4,11 @@ import (
 	"context"
 	"embed"
 	"errors"
+	"strings"
+
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc/metadata"
-	"strings"
 )
 
 const _defaultLocalizeKey = "localize"
@@ -22,7 +23,6 @@ func New(languageFS embed.FS, languagePath []string, Unmarshalers map[string]fun
 
 	for format, unmarshalFunc := range Unmarshalers {
 		bundle.RegisterUnmarshalFunc(format, unmarshalFunc)
-
 	}
 
 	for _, path := range languagePath {

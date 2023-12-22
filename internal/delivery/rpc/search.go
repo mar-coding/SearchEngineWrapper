@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+
 	searchPB "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/services/search/v1"
 	"github.com/mar-coding/SearchEngineWrapper/configs"
 	"github.com/mar-coding/SearchEngineWrapper/internal/domain"
@@ -33,5 +34,4 @@ func (a AllServices) ListItemsSearch(ctx context.Context, request *searchPB.List
 		PageNo:          items.PageNo,
 		TotalItemsCount: items.TotalItemsCount,
 	}, nil
-
 }

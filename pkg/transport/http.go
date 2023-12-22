@@ -2,12 +2,13 @@ package transport
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/middlewares"
 	"github.com/mar-coding/swaggerui"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"net/http"
 )
 
 type HTTPBootstrapper interface {
@@ -29,7 +30,6 @@ func NewHTTPServer(
 	middleware func(handler http.Handler) http.Handler,
 	muxOpts ...runtime.ServeMuxOption,
 ) HTTPBootstrapper {
-
 	httpServer := new(HTTPServer)
 
 	if len(muxOpts) == 0 {

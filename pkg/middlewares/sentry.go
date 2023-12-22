@@ -3,12 +3,13 @@ package middlewares
 import (
 	"context"
 	"encoding/hex"
+	"regexp"
+	"time"
+
 	"github.com/getsentry/sentry-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"regexp"
-	"time"
 )
 
 func recoverWithSentry(hub *sentry.Hub, ctx context.Context, o *options) {

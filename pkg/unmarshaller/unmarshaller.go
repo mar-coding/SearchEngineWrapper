@@ -3,10 +3,11 @@ package unmarshaller
 import (
 	"encoding/json"
 	"errors"
-	"github.com/pelletier/go-toml"
-	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
+
+	"github.com/pelletier/go-toml"
+	"gopkg.in/yaml.v3"
 )
 
 type Extension string

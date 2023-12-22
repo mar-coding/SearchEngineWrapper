@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/mar-coding/SearchEngineWrapper/pkg/errorHandler"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/mar-coding/SearchEngineWrapper/pkg/errorHandler"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 )
 
 const (

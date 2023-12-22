@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/elastic/go-elasticsearch/v8"
 	"strings"
+
+	"github.com/elastic/go-elasticsearch/v8"
 
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
@@ -49,7 +50,7 @@ func (e *Client) ExecuteQuery(ctx context.Context, indexName string, fields []st
 	pageStart := (pageNum - 1) * pageSize
 
 	req := esapi.SearchRequest{
-		Index: []string{fmt.Sprintf("%s", indexName)},
+		Index: []string{indexName},
 		Body:  strings.NewReader(fmt.Sprintf(`{"query": {"query_string": {"query": "%s", "fields": %s}}}`, query, jsonQuery)),
 		From:  esapi.IntPtr(int(pageStart)),
 		Size:  esapi.IntPtr(int(pageSize)),

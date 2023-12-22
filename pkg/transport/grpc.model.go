@@ -1,8 +1,9 @@
 package transport
 
 import (
-	"google.golang.org/grpc"
 	"net"
+
+	"google.golang.org/grpc"
 )
 
 type GRPCServer struct {

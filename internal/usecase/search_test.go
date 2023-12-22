@@ -1,14 +1,16 @@
 package usecase
 
 import (
+	"context"
+	"testing"
+
 	"github.com/mar-coding/SearchEngineWrapper/internal/domain"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestMockExecuteQuery(t *testing.T) {
 	res := make([]*domain.Item, 0)
-	searchResult, err := mockExecuteQuery(nil, "nil", nil, "nil", 0, 0, &res)
+	searchResult, err := mockExecuteQuery(context.Background(), "nil", nil, "nil", 0, 0, &res)
 	if err != nil {
 		assert.Errorf(t, err, "got error")
 	}

@@ -1,8 +1,9 @@
 package logger
 
 import (
-	"github.com/getsentry/sentry-go"
 	"log/slog"
+
+	"github.com/getsentry/sentry-go"
 )
 
 type Log struct {

@@ -3,9 +3,10 @@ package helper
 import (
 	"encoding/json"
 	"errors"
+	"reflect"
+
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
-	"reflect"
 )
 
 // ConvertProtoToModel convert proto structure to model

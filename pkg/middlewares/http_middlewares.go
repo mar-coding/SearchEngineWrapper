@@ -8,16 +8,17 @@ import (
 	"errors"
 	"expvar"
 	"fmt"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/mar-coding/SearchEngineWrapper/pkg/acl"
-	"github.com/mar-coding/SearchEngineWrapper/pkg/jwt"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 	"io"
 	"net/http"
 	"net/http/pprof"
 	"path"
 	"strings"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/acl"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/jwt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 type JwtHandler struct {
@@ -25,6 +26,9 @@ type JwtHandler struct {
 	publicSecretKey  string
 	privateSecretKey string
 }
+type httpkey string
+
+const _AuthorizationContextKeyForHttp httpkey = "Authorization"
 
 // NewJwtHandler create middleware for http handler to auth with jwt
 func NewJwtHandler(serviceCode int32, publicSecretKey, privateSecretKey string) *JwtHandler {
@@ -38,7 +42,7 @@ func NewJwtHandler(serviceCode int32, publicSecretKey, privateSecretKey string) 
 func (j *JwtHandler) SetAuthToContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authorization := r.Header.Get("Authorization")
-		r = r.WithContext(context.WithValue(r.Context(), "Authorization", authorization))
+		r = r.WithContext(context.WithValue(r.Context(), _AuthorizationContextKeyForHttp, authorization))
 		next.ServeHTTP(w, r)
 	})
 }
@@ -156,7 +160,11 @@ func SetRuntimeAsRootHandler(mux *http.ServeMux, rMux *runtime.ServeMux) *http.S
 // SwaggerHandler add swagger file embedded to http handler path, swaggerFileName (swagger.json or swagger.yaml and etc)
 func SwaggerHandler(mux *http.ServeMux, swaggerFileName string, swagger []byte) *http.ServeMux {
 	mux.HandleFunc("/"+swaggerFileName, func(w http.ResponseWriter, _ *http.Request) {
-		w.Write(swagger)
+		_, err := w.Write(swagger)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	})
 	return mux
 }
@@ -209,7 +217,10 @@ func getFormFile(r *http.Request, name string) ([]byte, error) {
 	}
 	defer file.Close()
 	buf := bytes.Buffer{}
-	io.Copy(&buf, file)
+	_, err = io.Copy(&buf, file)
+	if err != nil {
+		return nil, err
+	}
 	if err != nil {
 		return nil, fmt.Errorf("error while reading form file")
 	}
@@ -239,14 +250,17 @@ func expandMacros(jsonData map[string]interface{}, r *http.Request, res *map[str
 }
 
 func createRequestFromMultiPart(r *http.Request) (*http.Request, error) {
-	json_data, err := getFormFile(r, "data")
+	jsonData, err := getFormFile(r, "data")
 	if err != nil {
 		return nil, err
 	}
-	rawJson := json.RawMessage(json_data)
+	rawJson := json.RawMessage(jsonData)
 	var decoded map[string]interface{}
 	expanded := map[string]interface{}{}
-	json.Unmarshal(rawJson, &decoded)
+	err = json.Unmarshal(rawJson, &decoded)
+	if err != nil {
+		return nil, err
+	}
 	err = expandMacros(decoded, r, &expanded)
 	str, _ := json.Marshal(expanded)
 	if err != nil {

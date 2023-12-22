@@ -2,6 +2,7 @@ package acl
 
 import (
 	"context"
+
 	"github.com/mar-coding/SearchEngineWrapper/pkg/jwt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/metadata"
@@ -137,7 +138,11 @@ func (acl *Acl) SetPrivateTokenToOutgoingContext(ctx context.Context, serviceId 
 
 // SetAclToContext set acl to context with key acl
 func (acl *Acl) SetAclToContext(ctx context.Context) context.Context {
-	return context.WithValue(ctx, _defaultAclContextKey, acl)
+	return context.WithValue(
+		ctx,
+		_defaultAclContextKey,
+		acl,
+	)
 }
 
 // GetUserID return user id

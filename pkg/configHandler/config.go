@@ -5,9 +5,10 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
+	"os"
+
 	"github.com/mar-coding/SearchEngineWrapper/pkg/unmarshaller"
 	"google.golang.org/grpc/credentials"
-	"io/ioutil"
 )
 
 func New[Extra any](configPath string) (*BaseConfig[Extra], error) {
@@ -30,7 +31,7 @@ func (c *BaseConfig[T]) LoadGrpcServerCredentials() (credentials.TransportCreden
 	// Load server's certificate and private key
 	serverCert, err := tls.LoadX509KeyPair(c.Grpc.CertFilePath, c.Grpc.CertKeyFilePath)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("service config: load x509 key pair got error %s", err.Error()))
+		return nil, fmt.Errorf("service config: load x509 key pair got error %s", err.Error())
 	}
 
 	// Create the credentials and return it
@@ -49,7 +50,7 @@ func (c *BaseConfig[T]) LoadGrpcClientCredentials(client *GrpcClient) (credentia
 	}
 
 	// Load certificate of the CA who signed server's certificate
-	pemServerCA, err := ioutil.ReadFile(client.CertCAFilePath)
+	pemServerCA, err := os.ReadFile(client.CertCAFilePath)
 	if err != nil {
 		return nil, err
 	}

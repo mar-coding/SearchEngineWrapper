@@ -3,9 +3,10 @@ package pagination
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
 const (
@@ -100,7 +101,7 @@ func (list *List) generateFilterStage(filters map[string]string, columnsMap map[
 		}
 	}
 	if len(filterStage) > 0 {
-		stage = bson.D{{"$match", filterStage}}
+		stage = bson.D{{Key: "$match", Value: filterStage}}
 	}
 	return stage, filters
 }
@@ -185,7 +186,7 @@ func (list *List) addSortAndPageLimitStages(preparedPipelines mongo.Pipeline, co
 }
 
 func (list *List) getCountStage() bson.D {
-	return bson.D{{"$count", "count"}}
+	return bson.D{{Key: "$count", Value: "count"}}
 }
 
 func (list *List) setListTotalCount(countPipeline mongo.Pipeline, context context.Context) {
@@ -197,7 +198,11 @@ func (list *List) setListTotalCount(countPipeline mongo.Pipeline, context contex
 	defer countCursor.Close(context)
 	countCursor.Next(context)
 	countData := bson.M{}
-	countCursor.Decode(&countData)
+	err = countCursor.Decode(&countData)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	if count, ok := countData["count"]; ok {
 		list.TotalItemsCount = int(count.(int32))
 	}
@@ -205,27 +210,27 @@ func (list *List) setListTotalCount(countPipeline mongo.Pipeline, context contex
 
 func (list *List) getPageLimitStages() []bson.D {
 	if list.PageNo == 1 {
-		return []bson.D{{{"$limit", list.PageSize}}}
+		return []bson.D{{{Key: "$limit", Value: list.PageSize}}}
 	}
-	return []bson.D{{{"$skip", (list.PageNo - 1) * list.PageSize}}, {{"$limit", list.PageSize}}}
-
+	return []bson.D{{{Key: "$skip", Value: (list.PageNo - 1) * list.PageSize}}, {{Key: "$limit", Value: list.PageSize}}}
 }
 
 func (list *List) getSortStage(columnsMap map[string]Columned) (sortStage bson.D) {
 	if list.Sort == "" {
 		return nil
 	}
-	//sorts := strings.Split(pagination.Sort, ",")
+	// sorts := strings.Split(pagination.Sort, ",")
 	sortItem := list.Sort
-	//for _, sortItem := range sorts {
+	// for _, sortItem := range sorts {
 	field, direction := getSortField(sortItem, columnsMap)
 	if field == "" {
 		return nil
 	}
-	sortStage = bson.D{{"$sort", bson.D{{field, direction}}}}
+	sortStage = bson.D{{Key: "$sort", Value: bson.D{{Key: field, Value: direction}}}}
 	//}
 	return sortStage
 }
+
 func getSortField(sortItem string, columnsMap map[string]Columned) (sortField string, direction int) {
 	direction = 1
 	sortField = sortItem
@@ -257,8 +262,7 @@ func (list *List) prepareJsonResult(cursor *mongo.Cursor, context context.Contex
 func (list *List) addChangeableResultCountStagesAndFilters(remainingFilters map[string]string) ([]bson.D, int, map[string]string) {
 	pipelineIndex := 0
 	var pipelines []bson.D
-	filterStage := bson.D{}
-	/// add pipelines before sort and pagination stages that maybe change result count
+	filterStage := bson.D{} /// add pipelines before sort and pagination stages that maybe change result count
 	for pipelineIndex < len(list.dbPipelines) && pipelinesHasChangeableResultCount(list.dbPipelines[pipelineIndex:]) {
 		pipeline := list.dbPipelines[pipelineIndex]
 		pipelines = append(pipelines, pipeline.Pipeline)

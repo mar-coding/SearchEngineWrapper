@@ -2,10 +2,11 @@ package transport
 
 import (
 	"context"
+	"net"
+
 	"github.com/mar-coding/SearchEngineWrapper/pkg/middlewares"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"net"
 )
 
 type GRPCBootstrapper interface {
@@ -37,7 +38,6 @@ func NewGRPCServer(
 	grpcServer.notify = make(chan error)
 
 	return grpcServer, nil
-
 }
 
 func (g *GRPCServer) Start() {

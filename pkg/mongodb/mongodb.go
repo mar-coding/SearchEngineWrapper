@@ -3,15 +3,14 @@ package mongodb
 import (
 	"context"
 	"errors"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"sync"
 	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	_ Connector = (*Client)(nil)
-)
+var _ Connector = (*Client)(nil)
 
 type Connector interface {
 	GetClient() *Client

@@ -2,6 +2,7 @@ package acl
 
 import (
 	"context"
+
 	"github.com/mar-coding/SearchEngineWrapper/pkg/jwt"
 )
 
@@ -11,7 +12,9 @@ type JwtController struct {
 	token      string
 }
 
-const _defaultAclContextKey = "acl"
+type contextKey string
+
+const _defaultAclContextKey contextKey = "acl"
 
 // NewWithJwt create acl object for control jwt token
 func NewWithJwt(serviceCode int32, jwtToken string, options ...Option) (*JwtController, error) {

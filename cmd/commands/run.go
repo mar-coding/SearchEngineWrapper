@@ -3,6 +3,10 @@ package commands
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"os"
+	"strconv"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/mar-coding/SearchEngineWrapper/APIs"
 	searchPB "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/services/search/v1"
@@ -16,9 +20,6 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/descriptorpb"
-	"net/http"
-	"os"
-	"strconv"
 )
 
 func init() {
@@ -66,6 +67,9 @@ var runCmd = &cobra.Command{
 				os.Getenv("PRIVATE_SECRET"), ""),
 			middlewares.GRPCLogging(logging),
 		)
+		if err != nil {
+			return err
+		}
 
 		httpAddr := fmt.Sprintf("%s:%s", cfg.Address, strconv.Itoa(cfg.Rest.Port))
 		httpServer := transport.NewHTTPServer(

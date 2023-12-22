@@ -3,13 +3,14 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"strings"
+	"sync"
+
 	"github.com/mar-coding/SearchEngineWrapper/configs"
 	"github.com/mar-coding/SearchEngineWrapper/internal/domain"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/elastic"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/errorHandler"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/logger"
-	"strings"
-	"sync"
 )
 
 type SearchUseCase struct {
@@ -24,7 +25,6 @@ func NewSearch(elastic *elastic.Client, logger logger.Logger, error errorHandler
 		logger:  logger,
 		elastic: elastic,
 	}
-
 }
 
 func (s *SearchUseCase) None() {}

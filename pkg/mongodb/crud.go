@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
+	"strings"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"reflect"
-	"strings"
 )
 
 // UpdateFields update specific fields in a document
@@ -18,8 +19,9 @@ func UpdateFields(ctx context.Context, collection *mongo.Collection, searchFilte
 		return err
 	}
 
-	_, err = collection.UpdateOne(ctx, searchFilter, bson.D{{"$set",
-		fieldsForUpdate,
+	_, err = collection.UpdateOne(ctx, searchFilter, bson.D{{
+		Key:   "$set",
+		Value: fieldsForUpdate,
 	}})
 
 	return err
@@ -60,7 +62,7 @@ func getBsonField(documentType reflect.Type, fieldName string) (string, error) {
 	bsonFieldName := fieldName
 	updateField, hasField := documentType.FieldByName(fieldName)
 	if !hasField {
-		return "", errors.New(fmt.Sprintf("mongodb: failed to get field %s from document", fieldName))
+		return "", fmt.Errorf("mongodb: failed to get field %s from document", fieldName)
 	}
 	bsonTag := strings.Split(updateField.Tag.Get("bson"), ";")
 	if len(bsonTag) > 0 {

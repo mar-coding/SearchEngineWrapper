@@ -1,11 +1,13 @@
 package pagination
 
 import (
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type (
@@ -15,24 +17,24 @@ type (
 
 const (
 	Greater      FilterOperator = ">"
-	GreaterEqual                = ">="
-	Less                        = "<"
-	LessEqual                   = "<="
-	Equal                       = "="
-	Between                     = "between"
-	In                          = "in"
-	NotIn                       = "not in"
-	Like                        = "like"
-	Is                          = "is"
+	GreaterEqual FilterOperator = ">="
+	Less         FilterOperator = "<"
+	LessEqual    FilterOperator = "<="
+	Equal        FilterOperator = "="
+	Between      FilterOperator = "between"
+	In           FilterOperator = "in"
+	NotIn        FilterOperator = "not in"
+	Like         FilterOperator = "like"
+	Is           FilterOperator = "is"
 )
 
 const (
 	TEXT      ColumnType = "text"
-	DATE                 = "date"
-	INT                  = "int"
-	BOOL                 = "bool"
-	FLOAT64              = "float64"
-	OBJECT_ID            = "objectID"
+	DATE      ColumnType = "date"
+	INT       ColumnType = "int"
+	BOOL      ColumnType = "bool"
+	FLOAT64   ColumnType = "float64"
+	OBJECT_ID ColumnType = "objectID"
 
 	NONE = "-"
 )
@@ -75,6 +77,7 @@ func (columnInfo *ColumnInfo) setPrepareValueFunc(prepareValueFunc func(interfac
 	columnInfo.PrepareValueFunc = prepareValueFunc
 	return columnInfo
 }
+
 func (columnInfo *ColumnInfo) hideInExport() *ColumnInfo {
 	columnInfo.ExportSettings.Show = false
 	return columnInfo
@@ -186,10 +189,18 @@ func (columnInfo *ColumnInfo) convertValueToArrayDataType(value string) []interf
 func parseDateTime(datetime string) time.Time {
 	t, err := time.Parse(time.RFC3339Nano, datetime)
 	if err != nil {
-		t, err = time.Parse("2006-1-2 15:4", datetime)
+		t, err = time.Parse(`2006-1-2 15:4`, datetime)
+		if err != nil {
+			fmt.Println(err)
+			return time.Time{}
+		}
 	}
 	if err != nil {
-		t, err = time.ParseInLocation("2006-1-2", datetime, time.Local)
+		t, err = time.ParseInLocation(`2006-1-2`, datetime, time.Local)
+		if err != nil {
+			fmt.Println(err)
+			return time.Time{}
+		}
 	}
 	return t
 }

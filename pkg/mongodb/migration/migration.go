@@ -3,6 +3,7 @@ package migration
 import (
 	"context"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -11,7 +12,7 @@ import (
 // AddNormalIndex create normal index for migration
 func AddNormalIndex(ctx context.Context, collection *mongo.Collection, field string) error {
 	opt := options.Index().SetName(fmt.Sprintf("%s_%s_normal", collection.Name(), field)).SetUnique(false)
-	keys := bson.D{{field, 1}}
+	keys := bson.D{{Key: field, Value: 1}}
 	model := mongo.IndexModel{Keys: keys, Options: opt}
 	_, err := collection.Indexes().CreateOne(ctx, model)
 	return err
@@ -23,7 +24,7 @@ func AddUniqueIndex(ctx context.Context, collection *mongo.Collection, field str
 	if sparse {
 		opt = opt.SetSparse(true)
 	}
-	keys := bson.D{{field, 1}}
+	keys := bson.D{{Key: field, Value: 1}}
 	model := mongo.IndexModel{Keys: keys, Options: opt}
 	_, err := collection.Indexes().CreateOne(ctx, model)
 	return err

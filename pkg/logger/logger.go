@@ -3,12 +3,13 @@ package logger
 import (
 	"context"
 	"fmt"
-	"github.com/getsentry/sentry-go"
 	"log/slog"
 	"os"
 	"runtime"
 	"runtime/debug"
 	"time"
+
+	"github.com/getsentry/sentry-go"
 )
 
 type (

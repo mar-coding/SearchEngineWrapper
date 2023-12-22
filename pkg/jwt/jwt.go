@@ -2,9 +2,10 @@ package jwt
 
 import (
 	"errors"
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 type SecretType uint
