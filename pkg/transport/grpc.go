@@ -2,7 +2,7 @@ package transport
 
 import (
 	"context"
-	"github.com/mar-coding/personalWebsiteBackend/pkg/middlewares"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/middlewares"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"

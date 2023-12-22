@@ -2,7 +2,7 @@ package acl
 
 import (
 	"context"
-	"github.com/mar-coding/personalWebsiteBackend/pkg/jwt"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/jwt"
 )
 
 type JwtController struct {

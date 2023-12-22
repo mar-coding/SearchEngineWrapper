@@ -3,7 +3,7 @@ package transport
 import (
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/mar-coding/personalWebsiteBackend/pkg/middlewares"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/middlewares"
 	"github.com/mar-coding/swaggerui"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

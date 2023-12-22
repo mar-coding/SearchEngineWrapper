@@ -9,7 +9,7 @@ var configPath string
 
 var rootCmd = &cobra.Command{
 	Use:   "Web",
-	Short: "Personal WebSite",
+	Short: "Personal Application",
 }
 
 func Execute() {

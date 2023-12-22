@@ -5,7 +5,7 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
-	"github.com/mar-coding/personalWebsiteBackend/pkg/unmarshaller"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/unmarshaller"
 	"google.golang.org/grpc/credentials"
 	"io/ioutil"
 )

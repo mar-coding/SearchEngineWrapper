@@ -1,10 +1,10 @@
 package configs
 
 import (
-	"github.com/mar-coding/personalWebsiteBackend/pkg/configHandler"
-	"github.com/mar-coding/personalWebsiteBackend/pkg/errorHandler"
-	"github.com/mar-coding/personalWebsiteBackend/pkg/logger"
-	"github.com/mar-coding/personalWebsiteBackend/pkg/serviceInfo"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/configHandler"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/errorHandler"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/logger"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/serviceInfo"
 	"log"
 )
 

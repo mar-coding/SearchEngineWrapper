@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/mar-coding/personalWebsiteBackend/pkg/errorHandler"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/errorHandler"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"io"

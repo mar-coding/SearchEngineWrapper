@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang/protobuf/proto"
-	errPB "github.com/mar-coding/personalWebsiteBackend/APIs/proto-gen/components/errors/v1"
+	errPB "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/components/errors/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

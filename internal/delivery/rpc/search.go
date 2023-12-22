@@ -2,15 +2,36 @@ package rpc
 
 import (
 	"context"
-	webPB "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/services/website/v1"
+	searchPB "github.com/mar-coding/SearchEngineWrapper/APIs/proto-gen/services/search/v1"
+	"github.com/mar-coding/SearchEngineWrapper/configs"
+	"github.com/mar-coding/SearchEngineWrapper/internal/domain"
+	"github.com/mar-coding/SearchEngineWrapper/pkg/helper"
 )
 
-func (w WebsiteService) TestPostAPI(ctx context.Context, in *webPB.TestPostAPIRequest) (*webPB.TestPostAPIResponse, error) {
-	//TODO implement me
-	panic("implement me")
-}
+func (a AllServices) ListItemsSearch(ctx context.Context, request *searchPB.ListItemsSearchRequest) (*searchPB.ListItemsSearchResponse, error) {
+	useCase := domain.Bridge[domain.SearchUseCase](configs.SEARCH_KEY, a.useCases)
 
-func (w WebsiteService) TestGetAPI(ctx context.Context, in *webPB.TestGetAPIRequest) (*webPB.TestGetAPIResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	items, err := useCase.ListItems(ctx, "", 10, 1, false)
+	if err != nil {
+		return nil, err
+	}
+
+	itemsPB := make([]*searchPB.Item, 0)
+	for _, item := range items.Items {
+		itemPB, err := helper.ConvertModelToProto[*searchPB.Item](item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPB.Id != "0" {
+			itemsPB = append(itemsPB, itemPB)
+		}
+	}
+
+	return &searchPB.ListItemsSearchResponse{
+		Items:           itemsPB,
+		PageSize:        items.PageSize,
+		PageNo:          items.PageNo,
+		TotalItemsCount: items.TotalItemsCount,
+	}, nil
+
 }

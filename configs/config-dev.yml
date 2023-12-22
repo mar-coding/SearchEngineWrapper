@@ -8,5 +8,17 @@ grpc:
 rest:
   port: 8000
 
+database:
+  elastic:
+    addresses:
+      - http://localhost:9200
+    username: elastic
+    password: 6qYp22cj9aO4XM7fAK
+
+logging:
+  debug: false
+  handler: 0
+  enable_caller: true
+
 extra_data:
   email: "this@is.test"
