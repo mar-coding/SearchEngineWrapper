@@ -1,0 +1,24 @@
+version: "3.8"
+
+networks:
+  internal:
+    external: true
+
+services:
+  search-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: search-backend
+    restart: always
+    ports:
+      - 9000:9000 # grpc port
+      - 8000:8000 # rest port
+    networks:
+      internal:
+    volumes:
+      - ./configs/config.yml:/etc/project/config.yml #address of config files for using in main program
+    environment:
+      - PUBLIC_SECRET=xxx
+      - PRIVATE_SECRET=yyy
+      - SIGNATURE_PRIVATE_KEY=zzz

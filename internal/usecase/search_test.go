@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"github.com/mar-coding/SearchEngineWrapper/internal/domain/mocking"
 	"testing"
 
 	"github.com/mar-coding/SearchEngineWrapper/internal/domain"
@@ -10,7 +11,7 @@ import (
 
 func TestMockExecuteQuery(t *testing.T) {
 	res := make([]*domain.Item, 0)
-	searchResult, err := mockExecuteQuery(context.Background(), "nil", nil, "nil", 0, 0, &res)
+	searchResult, err := mocking.MockExecuteQuery(context.Background(), "nil", nil, "nil", 0, 0, &res)
 	if err != nil {
 		assert.Errorf(t, err, "got error")
 	}

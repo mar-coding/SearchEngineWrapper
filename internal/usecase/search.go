@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"github.com/mar-coding/SearchEngineWrapper/internal/domain/mocking"
 	"strings"
 	"sync"
 
@@ -56,7 +57,7 @@ func (s *SearchUseCase) ListItems(ctx context.Context, query string, pageSize, p
 		//	"description",
 		//	"url",
 		//}, query, pageNo, pageSize, &results)
-		count, err := mockExecuteQuery(ctx, configs.ELASTIC_ITEM_INDEX_KEY, []string{
+		count, err := mocking.MockExecuteQuery(ctx, configs.ELASTIC_ITEM_INDEX_KEY, []string{
 			"title",
 			"description",
 			"url",
@@ -75,28 +76,4 @@ func (s *SearchUseCase) ListItems(ctx context.Context, query string, pageSize, p
 	searchResult.TotalItemsCount = int32(resultCount)
 
 	return searchResult, nil
-}
-
-func mockExecuteQuery(_ context.Context, _ string, _ []string, _ string, _ int32, _ int32, response any) (int, error) {
-	item1 := &domain.Item{
-		Title:       "Item 1",
-		Description: "Description 1",
-		Url:         "https://example.com/item1",
-	}
-
-	item2 := &domain.Item{
-		Title:       "Item 2",
-		Description: "Description 2",
-		Url:         "https://example.com/item2",
-	}
-
-	items := make([]*domain.Item, 0)
-	items = append(items, item1)
-	items = append(items, item2)
-
-	if res, ok := response.(*[]*domain.Item); ok {
-		*res = items
-	}
-
-	return 2, nil
 }

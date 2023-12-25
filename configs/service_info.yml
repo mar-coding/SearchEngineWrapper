@@ -1,18 +1,10 @@
-name: "personal_website"
-description: "personal search for my own search"
+name: "search_website"
+description: "search backend project"
 code: 1
 version: "v1"
 application_id: "f168fe80-fed3-4919-9909-d3749226e22e"
 
 permissions:
-  - name: "test"
-    description: "test"
+  - name: "list_items_post"
+    description: "list items for search response"
     code: 1
-
-  - name: "read"
-    description: "read"
-    code: 2
-
-  - name: "write"
-    description: "write"
-    code: 3
