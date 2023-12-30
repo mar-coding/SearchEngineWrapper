@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+.search-container {
+    margin-bottom: 10px;
+}
+
+
+body {
+    background: #f8f7f7;
+    font-family: 'Poppins', sans-serif;
+}
+/*Resize the wrap to see the search bar change!*/
+.wrap {
+    width: 80%;
+    margin: 0 auto;
+    
+}
+h1{
+    text-align: center;
+    color: #344e41;
+}
+a:hover {
+  color: aqua !important;
+}
+.search{
+    width: 100%;
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .search .searchTerm{
+    width: 100%;
+    height: 60px;
+    background: #dad7cd;
+    padding: 0 20px;
+    font-size: 16px;
+    font-family: 'Poppins';
+    border: none;
+    color: #344e41;
+    border-radius: 5px 0 0 5px ;
+  }
+  .search .searchTerm:focus{
+    border-color:#7b7575;
+    outline: none;
+  }
+  .search .searchTerm::placeholder{
+    opacity: 1;
+  }
+  .search .searchButton{
+    width: 100px;
+    height: 60px;
+    border: none;
+    background:#c4c2b9 url(./images/search-icon.png) no-repeat center;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+  }
+
+  /*list*/
+  
+  .results--box{
+    width: 100%;
+    padding: 0; 
+  }
+  .results--box li{
+    list-style: none;
+    border-bottom: 1px solid #a3b18a;
+    background: #f8f7f5;
+    padding: 10px 20px;
+  }
+  .results--box li:last-child{
+    border-bottom: none;
+  }
+  .results--box a{
+    font-size: 18px;
+    font-weight: 700;
+    color: #3a5a40;
+    text-decoration: none;
+    line-height: 35px;
+    transition: all .5s ease;
+  }
+.results--box p{
+    color: #353535;
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  /*pagination*/
+  .pagination{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    list-style: none;
+    margin-bottom: 50px ;
+  }
+  .pagination button{
+    width: 35px;
+    height: 35px;
+    border: 2px solid #a3b18a;
+    border-radius: 3px;
+    color: #344e41;
+    font-size: 14px;
+    font-weight: bold;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Poppins';
+    transition: all .5s ease;
+  }
+  .pagination button:hover{
+    background: #a3b18a;
+  }
