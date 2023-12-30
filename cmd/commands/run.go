@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -88,6 +89,8 @@ var runCmd = &cobra.Command{
 		elasticsearch, err := elastic.NewElasticSearch(cmd.Context(), cfg.Database.Elastic.Addresses, cfg.Database.Elastic.Username, cfg.Database.Elastic.Password, cfg.Development)
 		if err != nil {
 			return err
+		} else {
+			logging.InfoContext(context.Background(), false, "connected to ElasticSearch")
 		}
 
 		if err := httpServer.RegisterServiceEndpoint(searchPB.RegisterSearchServiceHandlerFromEndpoint); err != nil {

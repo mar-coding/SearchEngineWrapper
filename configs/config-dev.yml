@@ -11,7 +11,7 @@ rest:
 database:
   elastic:
     addresses:
-      - http://localhost:9200
+      - https://localhost:9200/
     username: elastic
     password: 6qYp22cj9aO4XM7fAK
 

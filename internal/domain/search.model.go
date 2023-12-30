@@ -1,10 +1,18 @@
 package domain
 
 type Item struct {
-	Id          string `bson:"_id" json:"id"`
-	Title       string `bson:"title" json:"title"`
-	Description string `bson:"description" json:"description"`
-	Url         string `bson:"url" json:"url"`
+	Text        []string `json:"text"`
+	Description string   `json:"description"`
+	Title       string   `json:"title"`
+	URL         string   `json:"url"`
+}
+
+type ElasticResult struct {
+	ID      string   `json:"_id"`
+	Ignored []string `json:"_ignored"`
+	Index   string   `json:"_index"`
+	Score   float64  `json:"_score"`
+	Source  Item     `json:"_source"`
 }
 
 type SearchResult struct {

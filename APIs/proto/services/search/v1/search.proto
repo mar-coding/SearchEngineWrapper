@@ -91,10 +91,9 @@ message ListItemsSearchResponse {
 }
 
 message Item {
-  string id = 1;
   string title = 2;
   string description = 3;
-  reserved 4,5,6,7,8,9;
+  reserved 1,4,5,6,7,8,9;
   string url = 10;
 }
 

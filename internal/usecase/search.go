@@ -3,15 +3,12 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/mar-coding/SearchEngineWrapper/internal/domain/mocking"
-	"strings"
-	"sync"
-
 	"github.com/mar-coding/SearchEngineWrapper/configs"
 	"github.com/mar-coding/SearchEngineWrapper/internal/domain"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/elastic"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/errorHandler"
 	"github.com/mar-coding/SearchEngineWrapper/pkg/logger"
+	"strings"
 )
 
 type SearchUseCase struct {
@@ -31,8 +28,8 @@ func NewSearch(elastic *elastic.Client, logger logger.Logger, error errorHandler
 func (s *SearchUseCase) None() {}
 
 func (s *SearchUseCase) ListItems(ctx context.Context, query string, pageSize, pageNo int32, withWildCard bool) (domain.SearchResult, error) {
-	var searchResult domain.SearchResult
-	results := make([]*domain.Item, 0)
+	var elasticResult []domain.ElasticResult
+	var result domain.SearchResult
 	resultCount := 0
 
 	query = strings.TrimSpace(query)
@@ -47,33 +44,53 @@ func (s *SearchUseCase) ListItems(ctx context.Context, query string, pageSize, p
 	if pageNo == 0 {
 		pageNo = configs.ELASTIC_DEFAULT_PAGE_NUMBER
 	}
-	wg := &sync.WaitGroup{}
+	count, err := s.elastic.ExecuteQuery(ctx, configs.ELASTIC_ITEM_INDEX_KEY, []string{
+		"title",
+		"text",
+		"url",
+	}, query, pageNo, pageSize, &elasticResult)
+	//count, err := mocking.MockExecuteQuery(ctx, configs.ELASTIC_ITEM_INDEX_KEY, []string{
+	//	"title",
+	//	"description",
+	//	"url",
+	//}, query, pageNo, pageSize, &results)
+	if err != nil {
+		s.logger.ErrorContext(ctx, true, err.Error())
+	}
+	resultCount += count
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		//count, err := s.elastic.ExecuteQuery(ctx, configs.ELASTIC_ITEM_INDEX_KEY, []string{
-		//	"title",
-		//	"description",
-		//	"url",
-		//}, query, pageNo, pageSize, &results)
-		count, err := mocking.MockExecuteQuery(ctx, configs.ELASTIC_ITEM_INDEX_KEY, []string{
-			"title",
-			"description",
-			"url",
-		}, query, pageNo, pageSize, &results)
-		if err != nil {
-			s.logger.ErrorContext(ctx, true, err.Error())
-		}
-		resultCount += count
-	}()
+	itemArr := make([]*domain.Item, 0)
 
-	wg.Wait()
+	for i := 0; i < len(elasticResult); i++ {
+		temp := elasticResult[i].Source
+		temp.Description = lenLimiter(cleanString(strings.Join(temp.Text, " ")), 200)
+		itemArr = append(itemArr, &temp)
+	}
 
-	searchResult.Items = results
-	searchResult.PageSize = pageSize
-	searchResult.PageNo = pageNo
-	searchResult.TotalItemsCount = int32(resultCount)
+	result.Items = itemArr
+	result.PageSize = pageSize
+	result.PageNo = pageNo
+	result.TotalItemsCount = int32(resultCount)
 
-	return searchResult, nil
+	return result, nil
+}
+
+func cleanString(input string) string {
+	cleaned := strings.ReplaceAll(input, "\n", "")
+	cleaned = strings.ReplaceAll(cleaned, "\t", "")
+	cleaned = strings.ReplaceAll(cleaned, "\r", "")
+	return cleaned
+}
+
+func lenLimiter(input string, limit int) string {
+	result := []rune(input)
+
+	if len(result) > limit {
+		output := string(result[:limit]) + " ..."
+		output = strings.TrimSpace(output)
+		return output
+	}
+
+	output := strings.TrimSpace(string(result))
+	return output
 }

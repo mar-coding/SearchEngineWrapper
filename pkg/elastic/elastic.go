@@ -2,8 +2,10 @@ package elastic
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/elastic/go-elasticsearch/v8"
@@ -20,10 +22,19 @@ type Client struct {
 }
 
 func NewElasticSearch(ctx context.Context, addresses []string, username, password string, development bool) (*Client, error) {
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: true,
+	}
+
+	transport := &http.Transport{
+		TLSClientConfig: tlsConfig,
+	}
+
 	cfg := elasticsearch.Config{
 		Addresses: addresses,
 		Username:  username,
 		Password:  password,
+		Transport: transport,
 	}
 
 	if development {
@@ -40,7 +51,7 @@ func NewElasticSearch(ctx context.Context, addresses []string, username, passwor
 	return &Client{client: cli}, nil
 }
 
-func (e *Client) ExecuteQuery(ctx context.Context, indexName string, fields []string, query string, pageNum int32, pageSize int32, response any) (int, error) {
+func (e *Client) ExecuteQuery(ctx context.Context, indexName string, fields []string, query string, pageNum int32, pageSize int32, elasticResult any) (int, error) {
 	jsonQuery, err := json.Marshal(fields)
 	if err != nil {
 		return 0, err
@@ -75,7 +86,10 @@ func (e *Client) ExecuteQuery(ctx context.Context, indexName string, fields []st
 		return 0, err
 	}
 
-	if err := json.Unmarshal(b, response); err != nil {
+	//sss := string(b)
+	//fmt.Println(sss)
+
+	if err := json.Unmarshal(b, &elasticResult); err != nil {
 		return 0, err
 	}
 

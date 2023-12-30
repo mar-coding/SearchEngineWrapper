@@ -7,7 +7,7 @@ const (
 
 // Elastic configs
 const (
-	ELASTIC_ITEM_INDEX_KEY      = "website"
+	ELASTIC_ITEM_INDEX_KEY      = "ferdowsi_university"
 	ELASTIC_DEFAULT_PAGE_SIZE   = 10
 	ELASTIC_DEFAULT_PAGE_NUMBER = 1
 )
